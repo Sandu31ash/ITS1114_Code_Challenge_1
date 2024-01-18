@@ -45,4 +45,51 @@ public class DBProcess {
     }
 
 
+    //    public void saveItem(List<ItemDTO> items,Connection connection){
+////          String customItemId = "IT "+UUID.randomUUID();
+//            for(ItemDTO itemData : items){
+//                try {
+//                    var ps = connection.prepareStatement(SAVE_ITEM_DATA);
+//                    ps.setString(1, itemData.getCode());
+//                    ps.setString(2, String.valueOf(itemData.getDes()));
+//                    ps.setDouble(3, itemData.getPrice());
+//                    ps.setInt(4, itemData.getQty());
+//
+//                    if (ps.executeUpdate() != 0) {
+//
+//                        System.out.println("Data saved");
+//                    } else {
+//
+//                        System.out.println("Failed to save");
+//
+//                    }
+//
+//                } catch (SQLException e) {
+//                    throw new RuntimeException(e);
+//                }
+//            }
+//    }
+
+    public void saveItemOne(ItemDTO items, Connection connection){
+//        String customItemId = "IT "+UUID.randomUUID();
+        try {
+            var ps = connection.prepareStatement(SAVE_ITEM_DATA);
+            ps.setString(1, items.getCode());
+            ps.setString(2, String.valueOf(items.getDes()));
+            ps.setDouble(3, items.getPrice());
+            ps.setInt(4, items.getQty());
+
+            if (ps.executeUpdate() != 0) {
+                logger.info("Data saved");
+                System.out.println("Data saved");
+            } else {
+                logger.error("Failed to save");
+                System.out.println("Failed to save");
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }

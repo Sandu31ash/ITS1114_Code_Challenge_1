@@ -52,4 +52,25 @@ public class Item extends HttpServlet {
     }
 
 
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, IOException {
+        if(req.getContentType() == null ||
+                !req.getContentType().toLowerCase().startsWith("application/json")){
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
+        }else {
+            Jsonb jsonb = JsonbBuilder.create();
+            var itemDTO = jsonb.fromJson(req.getReader(), ItemDTO.class);
+            var dbProcess = new DBProcess();
+            dbProcess.saveItemOne(itemDTO,connection);
+
+//            List<ItemDTO> itemList= jsonb.fromJson(req.getReader(),new ArrayList<ItemDTO>(){
+//            }.getClass().getGenericSuperclass());
+//            var dbProcess = new DBProcess();
+//            dbProcess.saveItem(itemList,connection);
+//            //itemList.forEach(System.out::println);
+//            jsonb.toJson(itemList,resp.getWriter());
+        }
+
+    }
+
 }
