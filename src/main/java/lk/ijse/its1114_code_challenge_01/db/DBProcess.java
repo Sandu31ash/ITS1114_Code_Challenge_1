@@ -45,6 +45,35 @@ public class DBProcess {
     }
 
 
+    public List<String> getCustomerData(String id, Connection connection) {
+        //get data
+        List<String> selectedCustomer = new ArrayList<>();
+        try {
+            var ps = connection.prepareStatement(GET_CUSTOMER_DATA);
+            ps.setInt(1, Integer.parseInt(id));
+            var rs = ps.executeQuery();
+
+            while (rs.next()) {
+                String id1 = rs.getString("id");
+                String name = rs.getString("name");
+                String contact = rs.getString("contact");
+                String address = rs.getString("address");
+
+                System.out.println("You got this -> "+id1+" , "+name+" , "+contact+" , "+address);
+
+                selectedCustomer.add(id1);
+                selectedCustomer.add(name);
+                selectedCustomer.add(contact);
+                selectedCustomer.add(address);
+            }
+            return selectedCustomer;
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
     //    public void saveItem(List<ItemDTO> items,Connection connection){
 ////          String customItemId = "IT "+UUID.randomUUID();
 //            for(ItemDTO itemData : items){
