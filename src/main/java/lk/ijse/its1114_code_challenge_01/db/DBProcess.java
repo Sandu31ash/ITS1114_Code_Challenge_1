@@ -24,7 +24,7 @@ public class DBProcess {
 
     private static final String SAVE_ITEM_DATA = "INSERT INTO item (CODE,DES,PRICE,QTY) VALUES (?,?,?,?)";
     private static final String UPDATE_ITEM_DATA = "UPDATE item SET DES=?, PRICE=?, QTY=? WHERE CODE=?";
-//    private static final String DELETE_ITEM_DATA = "DELETE FROM item WHERE CODE=?";
+    private static final String DELETE_ITEM_DATA = "DELETE FROM item WHERE CODE=?";
 
     public void saveCustomerData(CustomerDTO customerDTO, Connection connection){
 //        String customItemId = "IT "+UUID.randomUUID();
@@ -203,6 +203,24 @@ public class DBProcess {
             } else {
                 logger.error("Failed to update");
                 System.out.println("Failed to update");
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void deleteItem(ItemDTO itemDTO, Connection connection) {
+        try {
+            var ps = connection.prepareStatement(DELETE_ITEM_DATA);
+            ps.setString(1, itemDTO.getCode());
+
+            if (ps.executeUpdate() != 0) {
+                logger.info("Deleted");
+                System.out.println("Deleted");
+            } else {
+                logger.error("Failed to delete");
+                System.out.println("Failed to delete");
             }
 
         } catch (SQLException e) {
