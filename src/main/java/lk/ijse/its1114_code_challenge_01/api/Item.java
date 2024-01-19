@@ -3,6 +3,7 @@ package lk.ijse.its1114_code_challenge_01.api;
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
 import lk.ijse.its1114_code_challenge_01.db.DBProcess;
+import lk.ijse.its1114_code_challenge_01.dto.CustomerDTO;
 import lk.ijse.its1114_code_challenge_01.dto.ItemDTO;
 //import lombok.var;
 import org.slf4j.Logger;

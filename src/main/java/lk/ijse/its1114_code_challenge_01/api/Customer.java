@@ -1,10 +1,12 @@
 package lk.ijse.its1114_code_challenge_01.api;
 
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonWriter;
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
 import lk.ijse.its1114_code_challenge_01.db.DBProcess;
 import lk.ijse.its1114_code_challenge_01.dto.CustomerDTO;
-import lk.ijse.its1114_code_challenge_01.dto.ItemDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,7 +18,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
+import java.awt.*;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -34,6 +38,7 @@ public class Customer extends HttpServlet {
     private static final String GET_CUSTOMER_DATA = "SELECT * FROM customer WHERE id = ?";
 
     Connection connection;
+
     public void init() throws ServletException {
         logger.info("Init the Customer Servlet");
 
@@ -55,14 +60,14 @@ public class Customer extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, IOException {
-        if(req.getContentType() == null ||
-                !req.getContentType().toLowerCase().startsWith("application/json")){
+        if (req.getContentType() == null ||
+                !req.getContentType().toLowerCase().startsWith("application/json")) {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
-        }else {
+        } else {
             Jsonb jsonb = JsonbBuilder.create();
             var customerDTO = jsonb.fromJson(req.getReader(), CustomerDTO.class);
             var dbProcess = new DBProcess();
-            dbProcess.saveCustomerData(customerDTO,connection);
+            dbProcess.saveCustomerData(customerDTO, connection);
 
 //            List<ItemDTO> itemList= jsonb.fromJson(req.getReader(),new ArrayList<ItemDTO>(){
 //            }.getClass().getGenericSuperclass());
@@ -75,11 +80,24 @@ public class Customer extends HttpServlet {
     }
 
     @Override
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        if (req.getContentType() == null ||
+                !req.getContentType().toLowerCase().startsWith("application/json")) {
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
+        } else {
+            Jsonb jsonb = JsonbBuilder.create();
+            var customerDTO = jsonb.fromJson(req.getReader(), CustomerDTO.class);
+            var dbProcess = new DBProcess();
+            dbProcess.updateCustomer(customerDTO, connection);
+        }
+    }
+
+    @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         var writer = resp.getWriter();
         String id = req.getParameter("id");
 
-        System.out.println(" *ID : "+id);
+        System.out.println("ID : "+id);
 
         if(id == null){
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
@@ -93,39 +111,39 @@ public class Customer extends HttpServlet {
             }
 
         }
-
-//        if (req.getParameter("id") == null){
-//            resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
-//        }
-//
-//        var id = req.getParameter("id");
-//
-//        var writer = resp.getWriter();
-//        resp.setContentType("text/html");
-//
-//        // get data
-//        try {
-//            var ps = connection.prepareStatement(GET_CUSTOMER_DATA);
-//
-//            ps.setString(1,id);
-//            var resultSet = ps.executeQuery();
-//
-//            if(resultSet.next()){
-//                String id1 = resultSet.getString(1);
-//                String name1 = resultSet.getString(2);
-//                String contact1 = resultSet.getString(3);
-//                String address1 = resultSet.getString(4);
-//
-//                System.out.println("ID : "+id1+" Name : "+name1+" Contact : "+contact1+" Address : "+address1);
-//
-//            }else {
-//                System.out.println("Not Found");
-//            }
-//
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-
     }
 
+//    @Override
+//    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+////        var writer = resp.getWriter();
+//        String id = req.getParameter("id");
+//
+//        System.out.println(" *ID : " + id);
+//
+//        if (id == null) {
+//            resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
+//        } else {
+//            var data = new DBProcess();
+//            CustomerDTO customerDTO = data.getCustomerData(id, connection);
+//            if (customerDTO != null) {
+//                JsonObject jsonObject = Json.createObjectBuilder()
+//                        .add("id", customerDTO.getId())
+//                        .add("name", customerDTO.getName())
+//                        .add("contact", customerDTO.getContact())
+//                        .add("address", customerDTO.getAddress())
+//                        .build();
+//                StringWriter stringWriter = new StringWriter();
+//                try (JsonWriter jsonWriter = Json.createWriter(stringWriter)) {
+//                    jsonWriter.writeObject(jsonObject);
+//                }
+//                var writer = resp.getWriter();
+//                writer.println(stringWriter.toString());
+//
+//            } else {
+//                resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+//            }
+//
+//        }
+//
+//    }
 }

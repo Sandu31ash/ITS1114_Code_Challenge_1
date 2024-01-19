@@ -16,11 +16,15 @@ import java.util.UUID;
 public class DBProcess {
 
     private static final String SAVE_CUSTOMER_DATA = "INSERT INTO customer (ID,NAME,CONTACT,ADDRESS) VALUES (?,?,?,?)";
-    private static final String GET_CUSTOMER_DATA = "SELECT * FROM customer WHERE id = ?";
+    private static final String UPDATE_CUSTOMER_DATA = "UPDATE customer SET NAME=?, CONTACT=?, ADDRESS=? WHERE ID=?";
+//    private static final String DELETE_CUSTOMER_DATA = "DELETE FROM customer WHERE ID=?";
+    private static final String GET_CUSTOMER_DATA = "SELECT * FROM customer WHERE ID = ?";
 
     final static Logger logger = LoggerFactory.getLogger(DBProcess.class);
 
     private static final String SAVE_ITEM_DATA = "INSERT INTO item (CODE,DES,PRICE,QTY) VALUES (?,?,?,?)";
+//    private static final String UPDATE_ITEM_DATA = "UPDATE item SET DES=?, PRICE=?, QTY=? WHERE CODE=?";
+//    private static final String DELETE_ITEM_DATA = "DELETE FROM item WHERE CODE=?";
 
     public void saveCustomerData(CustomerDTO customerDTO, Connection connection){
 //        String customItemId = "IT "+UUID.randomUUID();
@@ -44,27 +48,46 @@ public class DBProcess {
         }
     }
 
+    public void updateCustomer(CustomerDTO customerDTO, Connection connection) {
+        try {
+            var ps = connection.prepareStatement(UPDATE_CUSTOMER_DATA);
+            ps.setString(1, customerDTO.getName());
+            ps.setString(2, customerDTO.getContact());
+            ps.setString(3, customerDTO.getAddress());
+            ps.setString(4, customerDTO.getId());
 
-    public List<String> getCustomerData(String id, Connection connection) {
+            if (ps.executeUpdate() != 0) {
+                logger.info("Data updated");
+                System.out.println("Data updated");
+            } else {
+                logger.error("Failed to update");
+                System.out.println("Failed to update");
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    public List<String> getCustomerData(String id, Connection connection){
         //get data
         List<String> selectedCustomer = new ArrayList<>();
         try {
             var ps = connection.prepareStatement(GET_CUSTOMER_DATA);
-            ps.setInt(1, Integer.parseInt(id));
+            ps.setString(1, id);
             var rs = ps.executeQuery();
 
-            while (rs.next()) {
+            while (rs.next()){
                 String id1 = rs.getString("id");
-                String name = rs.getString("name");
-                String contact = rs.getString("contact");
-                String address = rs.getString("address");
-
-                System.out.println("You got this -> "+id1+" , "+name+" , "+contact+" , "+address);
+                String name1 = rs.getString("name");
+                String contact1 = rs.getString("contact");
+                String address1 = rs.getString("address");
 
                 selectedCustomer.add(id1);
-                selectedCustomer.add(name);
-                selectedCustomer.add(contact);
-                selectedCustomer.add(address);
+                selectedCustomer.add(name1);
+                selectedCustomer.add(contact1);
+                selectedCustomer.add(address1);
             }
             return selectedCustomer;
 
@@ -72,6 +95,34 @@ public class DBProcess {
             throw new RuntimeException(e);
         }
     }
+
+
+//    public CustomerDTO getCustomerData(String id, Connection connection) {
+//        //get data
+//        try {
+//            var ps = connection.prepareStatement(GET_CUSTOMER_DATA);
+//            ps.setString(1, id);
+//            var rs = ps.executeQuery();
+//
+//            while (rs.next()) {
+//                String id1 = rs.getString("id");
+//                String name = rs.getString("name");
+//                String contact = rs.getString("contact");
+//                String address = rs.getString("address");
+//
+//                System.out.println("You got this -> "+id1+" , "+name+" , "+contact+" , "+address);
+//
+////                selectedCustomer.add(id1);
+////                selectedCustomer.add(name);
+////                selectedCustomer.add(contact);
+////                selectedCustomer.add(address);
+//            }
+//            return selectedCustomer;
+//
+//        } catch (SQLException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
 
 
     //    public void saveItem(List<ItemDTO> items,Connection connection){
