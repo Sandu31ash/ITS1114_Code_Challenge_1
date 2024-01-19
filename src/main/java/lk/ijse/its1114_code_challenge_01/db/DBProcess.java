@@ -23,7 +23,7 @@ public class DBProcess {
     final static Logger logger = LoggerFactory.getLogger(DBProcess.class);
 
     private static final String SAVE_ITEM_DATA = "INSERT INTO item (CODE,DES,PRICE,QTY) VALUES (?,?,?,?)";
-//    private static final String UPDATE_ITEM_DATA = "UPDATE item SET DES=?, PRICE=?, QTY=? WHERE CODE=?";
+    private static final String UPDATE_ITEM_DATA = "UPDATE item SET DES=?, PRICE=?, QTY=? WHERE CODE=?";
 //    private static final String DELETE_ITEM_DATA = "DELETE FROM item WHERE CODE=?";
 
     public void saveCustomerData(CustomerDTO customerDTO, Connection connection){
@@ -182,6 +182,27 @@ public class DBProcess {
             } else {
                 logger.error("Failed to save");
                 System.out.println("Failed to save");
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void updateItem(ItemDTO itemDTO, Connection connection) {
+        try {
+            var ps = connection.prepareStatement(UPDATE_ITEM_DATA);
+            ps.setString(1, itemDTO.getDes());
+            ps.setDouble(2, itemDTO.getPrice());
+            ps.setInt(3, itemDTO.getQty());
+            ps.setString(4, itemDTO.getCode());
+
+            if (ps.executeUpdate() != 0) {
+                logger.info("Data updated");
+                System.out.println("Data updated");
+            } else {
+                logger.error("Failed to update");
+                System.out.println("Failed to update");
             }
 
         } catch (SQLException e) {
