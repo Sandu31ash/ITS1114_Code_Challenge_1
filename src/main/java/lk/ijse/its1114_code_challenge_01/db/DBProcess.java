@@ -17,7 +17,7 @@ public class DBProcess {
 
     private static final String SAVE_CUSTOMER_DATA = "INSERT INTO customer (ID,NAME,CONTACT,ADDRESS) VALUES (?,?,?,?)";
     private static final String UPDATE_CUSTOMER_DATA = "UPDATE customer SET NAME=?, CONTACT=?, ADDRESS=? WHERE ID=?";
-//    private static final String DELETE_CUSTOMER_DATA = "DELETE FROM customer WHERE ID=?";
+    private static final String DELETE_CUSTOMER_DATA = "DELETE FROM customer WHERE ID=?";
     private static final String GET_CUSTOMER_DATA = "SELECT * FROM customer WHERE ID = ?";
 
     final static Logger logger = LoggerFactory.getLogger(DBProcess.class);
@@ -69,6 +69,23 @@ public class DBProcess {
         }
     }
 
+    public void deleteCustomer(CustomerDTO customerDTO, Connection connection) {
+        try {
+            var ps = connection.prepareStatement(DELETE_CUSTOMER_DATA);
+            ps.setString(1, customerDTO.getId());
+
+            if (ps.executeUpdate() != 0) {
+                logger.info("Deleted");
+                System.out.println("Deleted");
+            } else {
+                logger.error("Failed to delete");
+                System.out.println("Failed to delete");
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public List<String> getCustomerData(String id, Connection connection){
         //get data

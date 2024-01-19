@@ -93,6 +93,19 @@ public class Customer extends HttpServlet {
     }
 
     @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        if (req.getContentType() == null ||
+                !req.getContentType().toLowerCase().startsWith("application/json")) {
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
+        } else {
+            Jsonb jsonb = JsonbBuilder.create();
+            var customerDTO = jsonb.fromJson(req.getReader(), CustomerDTO.class);
+            var dbProcess = new DBProcess();
+            dbProcess.deleteCustomer(customerDTO, connection);
+        }
+    }
+
+    @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         var writer = resp.getWriter();
         String id = req.getParameter("id");
