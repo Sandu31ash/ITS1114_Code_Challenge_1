@@ -27,9 +27,10 @@ public class DBProcess {
     private static final String SAVE_ITEM_DATA = "INSERT INTO item (CODE,DES,PRICE,QTY) VALUES (?,?,?,?)";
     private static final String UPDATE_ITEM_DATA = "UPDATE item SET DES=?, PRICE=?, QTY=? WHERE CODE=?";
     private static final String DELETE_ITEM_DATA = "DELETE FROM item WHERE CODE=?";
+    private static final String GET_ITEM_DATA = "SELECT * FROM item WHERE CODE = ?";
 
     private static final String SAVE_ORDER_DATA = "INSERT INTO ordr (oCode,date,id,name,tot,disc,sTot,cash,bal) VALUES (?,?,?,?,?,?,?,?,?)";
-    private static final String GET_ORDER_DATA = "SELECT * FROM ordr WHERE OCODE=?";
+//    private static final String GET_ORDER_DATA = "SELECT * FROM ordr WHERE OCODE=?";
 
     public void saveCustomerData(CustomerDTO customerDTO, Connection connection){
 //        String customItemId = "IT "+UUID.randomUUID();
@@ -235,6 +236,37 @@ public class DBProcess {
             throw new RuntimeException(e);
         }
     }
+
+
+    public List<String> getItemData(String code, Connection connection){
+
+        System.out.println("Code is here --> "+code);
+
+        //get data
+        List<String> selectedCustomer = new ArrayList<>();
+        try {
+            var ps = connection.prepareStatement(GET_ITEM_DATA);
+            ps.setString(1, code);
+            var rs = ps.executeQuery();
+
+            while (rs.next()){
+                String code1 = rs.getString("code");
+                String des1 = rs.getString("des");
+                String price1 = rs.getString("price");
+                String qty1 = rs.getString("qty");
+
+                selectedCustomer.add(code1);
+                selectedCustomer.add(des1);
+                selectedCustomer.add(price1);
+                selectedCustomer.add(qty1);
+            }
+            return selectedCustomer;
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
     public void saveOrder(OrderDTO orderDTO, Connection connection) {
 
