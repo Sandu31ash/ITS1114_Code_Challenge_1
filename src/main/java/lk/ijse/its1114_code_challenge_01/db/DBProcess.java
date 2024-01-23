@@ -4,10 +4,12 @@ package lk.ijse.its1114_code_challenge_01.db;
 import lk.ijse.its1114_code_challenge_01.dto.CustomerDTO;
 import lk.ijse.its1114_code_challenge_01.dto.ItemDTO;
 //import lombok.var;
+import lk.ijse.its1114_code_challenge_01.dto.OrderDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +27,9 @@ public class DBProcess {
     private static final String SAVE_ITEM_DATA = "INSERT INTO item (CODE,DES,PRICE,QTY) VALUES (?,?,?,?)";
     private static final String UPDATE_ITEM_DATA = "UPDATE item SET DES=?, PRICE=?, QTY=? WHERE CODE=?";
     private static final String DELETE_ITEM_DATA = "DELETE FROM item WHERE CODE=?";
+
+    private static final String SAVE_ORDER_DATA = "INSERT INTO ordr (oCode,date,id,name,tot,disc,sTot,cash,bal) VALUES (?,?,?,?,?,?,?,?,?)";
+    private static final String GET_ORDER_DATA = "SELECT * FROM ordr WHERE OCODE=?";
 
     public void saveCustomerData(CustomerDTO customerDTO, Connection connection){
 //        String customItemId = "IT "+UUID.randomUUID();
@@ -88,6 +93,9 @@ public class DBProcess {
     }
 
     public List<String> getCustomerData(String id, Connection connection){
+
+        System.out.println("ID is here --> "+id);
+
         //get data
         List<String> selectedCustomer = new ArrayList<>();
         try {
@@ -228,4 +236,87 @@ public class DBProcess {
         }
     }
 
+    public void saveOrder(OrderDTO orderDTO, Connection connection) {
+
+        System.out.println(orderDTO.getCode());
+        System.out.println(orderDTO.getName());
+
+        try {
+            var ps = connection.prepareStatement(SAVE_ORDER_DATA);
+            ps.setString(1, orderDTO.getCode());
+            ps.setDate(2, orderDTO.getDate());
+            ps.setString(3, orderDTO.getId());
+            ps.setString(4, orderDTO.getName());
+            ps.setDouble(5, orderDTO.getTot());
+            ps.setDouble(6, orderDTO.getDisc());
+            ps.setDouble(7, orderDTO.getStot());
+            ps.setDouble(8, orderDTO.getCash());
+            ps.setDouble(9, orderDTO.getBal());
+
+            if (ps.executeUpdate() != 0) {
+                logger.info("Data saved");
+                System.out.println("Data saved");
+            } else {
+                logger.error("Failed to save");
+                System.out.println("Failed to save");
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+//    public List<String> getOrderData(String oCode, Connection connection){
+//        //get data
+//        List<String> selectedCustomer = new ArrayList<>();
+//        try {
+//            var ps = connection.prepareStatement(GET_ORDER_DATA);
+//            ps.setString(1, oCode);
+//            var rs = ps.executeQuery();
+//
+//            while (rs.next()){
+//                String oCode1 = rs.getString("oCode");
+//                String date1 = rs.getString("date");
+//                String id1 = rs.getString("id");
+//                String name1 = rs.getString("name");
+//                String tot1 = rs.getString("tot");
+//                String disc1 = rs.getString("disc");
+//                String sTot1 = rs.getString("sTot");
+//                String cash1 = rs.getString("cash");
+//                String bal1 = rs.getString("bal");
+//
+//
+//                selectedCustomer.add(oCode1);
+//                selectedCustomer.add(date1);
+//                selectedCustomer.add(id1);
+//                selectedCustomer.add(name1);
+//                selectedCustomer.add(tot1);
+//                selectedCustomer.add(disc1);
+//                selectedCustomer.add(sTot1);
+//                selectedCustomer.add(cash1);
+//                selectedCustomer.add(bal1);
+//            }
+//            return selectedCustomer;
+//
+//        } catch (SQLException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
+
+
 }
+
+
+//    CREATE TABLE ordr (
+//            oCode VARCHAR(255) NOT NULL,
+//            date DATE,
+//            id VARCHAR(10),
+//            name VARCHAR(255),
+//            tot DECIMAL(10,2),
+//            disc DECIMAL(10,2),
+//            sTot DECIMAL(10,2),
+//            cash DECIMAL(10,2),
+//            bal DECIMAL(10,2),
+//            PRIMARY KEY (oCode),
+//            FOREIGN KEY (id) REFERENCES customer(id)
+//    );

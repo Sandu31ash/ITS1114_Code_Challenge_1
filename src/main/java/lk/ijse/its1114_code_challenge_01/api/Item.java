@@ -100,22 +100,22 @@ public class Item extends HttpServlet {
         }
     }
 
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        var writer = resp.getWriter();
-        String code = req.getParameter("code");
-        if(code == null){
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
-        }else {
-
-            resp.setContentType("text/html");
-            var data = new DBProcess();
-            var getData = data.getCustomerData(code, connection);
-            for (String eachData : getData){
-                writer.println(eachData+"\n");
-            }
-
-        }
-    }
+//    @Override
+//    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+//        var writer = resp.getWriter();
+//        String code = req.getParameter("code");
+//        if(code == null){
+//            resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
+//        }else {
+//
+//            resp.setContentType("text/html");
+//            var data = new DBProcess();
+//            var getData = data.getCustomerData(code, connection);
+//            for (String eachData : getData){
+//                writer.println(eachData+"\n");
+//            }
+//
+//        }
+//    }
 
 }

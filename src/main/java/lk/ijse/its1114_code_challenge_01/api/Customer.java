@@ -34,9 +34,6 @@ import java.sql.SQLException;
 )
 public class Customer extends HttpServlet {
     final static Logger logger = LoggerFactory.getLogger(Customer.class);
-
-    private static final String GET_CUSTOMER_DATA = "SELECT * FROM customer WHERE id = ?";
-
     Connection connection;
 
     public void init() throws ServletException {
