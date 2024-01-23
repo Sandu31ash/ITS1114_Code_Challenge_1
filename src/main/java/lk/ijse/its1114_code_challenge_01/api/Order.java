@@ -59,27 +59,27 @@ public class Order extends HttpServlet {
 
     }
 
-//
-//    @Override
-//    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-//        var writer = resp.getWriter();
-//        String oCode = req.getParameter("oCode");
-//
-//        System.out.println("OrderCode : "+oCode);
-//
-//        if(oCode == null){
-//            resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
-//        }else {
-//
-//            resp.setContentType("text/html");
-//            var data = new DBProcess();
-//            var getData = data.getOrderData(oCode, connection);
-//            for (String eachData : getData){
-//                writer.println(eachData+"\n");
-//            }
-//
-//        }
-//    }
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        var writer = resp.getWriter();
+        String code = req.getParameter("code");
+
+        System.out.println("OrderCode : "+code);
+
+        if(code == null){
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
+        }else {
+
+            resp.setContentType("text/html");
+            var data = new DBProcess();
+            var getData = data.getOrderData(code, connection);
+            for (String eachData : getData){
+                writer.println(eachData+"\n");
+            }
+
+        }
+    }
 
 
 }

@@ -30,7 +30,7 @@ public class DBProcess {
     private static final String GET_ITEM_DATA = "SELECT * FROM item WHERE CODE = ?";
 
     private static final String SAVE_ORDER_DATA = "INSERT INTO ordr (oCode,date,id,name,tot,disc,sTot,cash,bal) VALUES (?,?,?,?,?,?,?,?,?)";
-//    private static final String GET_ORDER_DATA = "SELECT * FROM ordr WHERE OCODE=?";
+    private static final String GET_ORDER_DATA = "SELECT * FROM ordr WHERE oCode=?";
 
     public void saveCustomerData(CustomerDTO customerDTO, Connection connection){
 //        String customItemId = "IT "+UUID.randomUUID();
@@ -298,45 +298,48 @@ public class DBProcess {
         }
     }
 
-//    public List<String> getOrderData(String oCode, Connection connection){
-//        //get data
-//        List<String> selectedCustomer = new ArrayList<>();
-//        try {
-//            var ps = connection.prepareStatement(GET_ORDER_DATA);
-//            ps.setString(1, oCode);
-//            var rs = ps.executeQuery();
-//
-//            while (rs.next()){
-//                String oCode1 = rs.getString("oCode");
-//                String date1 = rs.getString("date");
-//                String id1 = rs.getString("id");
-//                String name1 = rs.getString("name");
-//                String tot1 = rs.getString("tot");
-//                String disc1 = rs.getString("disc");
-//                String sTot1 = rs.getString("sTot");
-//                String cash1 = rs.getString("cash");
-//                String bal1 = rs.getString("bal");
-//
-//
-//                selectedCustomer.add(oCode1);
-//                selectedCustomer.add(date1);
-//                selectedCustomer.add(id1);
-//                selectedCustomer.add(name1);
-//                selectedCustomer.add(tot1);
-//                selectedCustomer.add(disc1);
-//                selectedCustomer.add(sTot1);
-//                selectedCustomer.add(cash1);
-//                selectedCustomer.add(bal1);
-//            }
-//            return selectedCustomer;
-//
-//        } catch (SQLException e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
+    public List<String> getOrderData(String code, Connection connection){
+        //get data
+        List<String> selectedCustomer = new ArrayList<>();
+        try {
+            var ps = connection.prepareStatement(GET_ORDER_DATA);
+            ps.setString(1, code);
+            var rs = ps.executeQuery();
+
+            while (rs.next()){
+                String code1 = rs.getString("oCode");
+                Date date1 = Date.valueOf(rs.getString("date"));
+                String id1 = rs.getString("id");
+                String name1 = rs.getString("name");
+                Double tot1 = Double.valueOf(rs.getString("tot"));
+                Double disc1 = Double.valueOf(rs.getString("disc"));
+                Double stot1 = Double.valueOf(rs.getString("sTot"));
+                Double cash1 = Double.valueOf(rs.getString("cash"));
+                Double bal1 = Double.valueOf(rs.getString("bal"));
+
+                selectedCustomer.add(code1);
+                selectedCustomer.add(String.valueOf(date1));
+                selectedCustomer.add(id1);
+                selectedCustomer.add(name1);
+                selectedCustomer.add(String.valueOf(tot1));
+                selectedCustomer.add(String.valueOf(disc1));
+                selectedCustomer.add(String.valueOf(stot1));
+                selectedCustomer.add(String.valueOf(cash1));
+                selectedCustomer.add(String.valueOf(bal1));
+            }
+            return selectedCustomer;
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 
 }
+
+
+
+
 
 
 //    CREATE TABLE ordr (
